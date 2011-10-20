@@ -47,7 +47,7 @@ module ApnServer
 
     def to_bytes
       j = json_payload
-      [0, 0, device_token.size, device_token, 0, j.size, j].pack("ccca*cca*")
+      [0, 0, device_token.size, device_token, 0, j.bytesize, j].pack("ccca*cca*")
     end
 
     def self.valid?(p)
@@ -78,7 +78,7 @@ module ApnServer
       # parse json payload
       payload_len = buffer.slice!(0, 2).unpack('CC')
       j = buffer.slice!(0, payload_len.last)
-      result = ActiveSupport::JSON.decode(j)
+      result = JSON.parse(j)
 
       ['alert', 'badge', 'sound'].each do |k|
         notification.send("#{k}=", result['aps'][k]) if result['aps'] && result['aps'][k]
