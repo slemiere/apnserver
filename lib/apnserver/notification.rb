@@ -2,6 +2,7 @@ require 'apnserver/payload'
 require 'base64'
 require 'active_support/ordered_hash'
 require 'active_support/json'
+require 'json'
 
 module ApnServer
   class Config
@@ -26,7 +27,7 @@ module ApnServer
     end
 
     def json_payload
-      j = ActiveSupport::JSON.encode(payload)
+      j = JSON.generate(payload)
       raise PayloadInvalid.new("The payload is larger than allowed: #{j.length}") if j.size > 256
       j
     end
